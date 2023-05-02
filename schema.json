@@ -1,0 +1,46 @@
+{
+  "type": "component",
+  "metadata": {},
+  "schema": {
+    "name": "nikita-input-mask",
+    "friendlyName": "nikita-input-mask",
+    "description": "Mask inputs for credit cards, phone numbers, etc",
+    "icon": "TextExclude",
+    "settings": [
+      {
+        "type": "field/string",
+        "label": "Field",
+        "key": "field",
+        "required": true
+      },
+      {
+        "type": "text",
+        "label": "Label",
+        "key": "label"
+      },
+      {
+        "type": "text",
+        "key": "mask",
+        "label": "Mask",
+        "defaultValue": "0000-000000-00000",
+        "required": true
+      },
+      {
+        "type": "validation/string",
+        "label": "Validation",
+        "key": "validation"
+      },
+      {
+        "type": "event",
+        "label": "On Input",
+        "key": "onInput",
+        "context": [
+          {
+            "label": "Field Value",
+            "key": "value"
+          }
+        ]
+      }
+    ]
+  }
+}
