@@ -1,5 +1,5 @@
 <script>
-  import { getContext, onDestroy } from "svelte"
+  import { getContext, onDestroy, Input } from "svelte"
   import MaskInput from "./MaskInput.svelte"
 
   export let field
@@ -31,6 +31,13 @@
     unsubscribe?.()
   })
 
+  const handleInput = e => {
+    if (onInput) {
+      console.log('fire input', e)
+      onInput({ value: e.detail })
+    }
+  }
+
   const fieldGroupContext = getContext("field-group")
   const labelPos = fieldGroupContext?.labelPosition || "above"
 
@@ -38,28 +45,7 @@
 </script>
 
 <div class="spectrum-Form-item" use:styleable={$component.styles}>
-  {#if !formContext}
-    <div class="placeholder">Mask input needs to be wrapped in a form</div>
-  {:else}
-    <label
-      class:hidden={!label}
-      for={fieldState?.fieldId}
-      class={`spectrum-FieldLabel spectrum-FieldLabel--sizeM spectrum-Form-itemLabel ${labelClass}`}
-    >
-      {label || " "}
-    </label>
-    <div class="spectrum-Textfield">
-      <MaskInput 
-        on:change={(e) => {fieldApi?.setValue(e.detail?.inputState?.visibleValue)}}
-        alwaysShowMask
-        maskChar="_"
-        {mask}
-      />
-    </div>
-    {#if fieldState?.error}
-      <div class="error">{fieldState.error}</div>
-    {/if}
-  {/if}
+  <input on:input={handleInput} />
 </div>
 
 <style>
