@@ -16,7 +16,7 @@
       
   const formApi = formContext?.formApi
   $: formStep = formStepContext ? $formStepContext || 1 : 1
-  $: formField = formApi?.registerField(field, "string", "", false, validation, formStep)
+  $: formField = formApi?.registerField(field, "string", defaultValue, false, validation, formStep)
 
   const { styleable } = getContext("sdk")
 
@@ -28,7 +28,13 @@
     fieldApi = value?.fieldApi;
   });
 
+  onDestroy(() => {
+    fieldApi?.deregister()
+    unsubscribe?.()
+  })
+
   const handleChange = e => {
+    fieldApi?.setValue(e.target.value)
     if (onChange) {
       onChange({ value: e.target.value })
     }
@@ -43,19 +49,16 @@
   }
   
   function saveInput(tValue){
-    console.log('triggered')
+    console.log('triggered2')
     if(onInput) onInput({ value: tValue})
   }
 
   const handleInput = e => {
     return debounce(() => saveInput(e.target.value), delay)()
   }  
-  
 
-  onDestroy(() => {
-    fieldApi?.deregister()
-    unsubscribe?.()
-  })
+
+  
 
   const fieldGroupContext = getContext("field-group")
   const labelPos = fieldGroupContext?.labelPosition || "above"
@@ -65,7 +68,7 @@
 
 <div class="spectrum-Form-item" use:styleable={$component.styles}>
   {#if !formContext}
-    <div class="placeholder">Mask input needs to be wrapped in a form</div>
+    <div class="placeholder">Search bar needs to be wrapped in a form</div>
   {:else}
     <label
       class:hidden={!label}
@@ -77,7 +80,7 @@
     <div class="spectrum-Textfield">
       <input
         class="spectrum-Textfield-input"
-        bind:value={inputValue}
+        value={fieldState?.value}
         on:input={handleInput}
         on:change={handleChange}
         placeholder={placeholder}
