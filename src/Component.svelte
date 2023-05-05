@@ -1,13 +1,15 @@
 <script>
-  import { getContext, onDestroy, Input } from "svelte"
-  import MaskInput from "./MaskInput.svelte"
+  import { getContext, onDestroy } from "svelte"
 
   export let field
   export let label
-  export let mask = "0000-000000-00000"
-  export let validation
+  export let placeholder
+  export let defaultValue
+  export let delay = 0
+  export let onChange
   export let onInput
-
+  export let validation
+  let inputValue = defaultValue
   const component = getContext("component")
   const formContext = getContext("form")
   const formStepContext = getContext("form-step") 
@@ -26,17 +28,34 @@
     fieldApi = value?.fieldApi;
   });
 
+  const handleChange = e => {
+    if (onChange) {
+      onChange({ value: e.target.value })
+    }
+  }
+
+  let timer;
+  function debounce(func, timeout = 300){
+    return (...args) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => { func.apply(this, args); }, timeout);
+    };
+  }
+  
+  function saveInput(tValue){
+    console.log('triggered')
+    if(onInput) onInput({ value: tValue})
+  }
+
+  const handleInput = e => {
+    return debounce(() => saveInput(e.target.value), delay)()
+  }  
+  
+
   onDestroy(() => {
     fieldApi?.deregister()
     unsubscribe?.()
   })
-
-  const handleInput = e => {
-    if (onInput) {
-      console.log('fire input', e)
-      onInput({ value: e.detail })
-    }
-  }
 
   const fieldGroupContext = getContext("field-group")
   const labelPos = fieldGroupContext?.labelPosition || "above"
@@ -45,7 +64,29 @@
 </script>
 
 <div class="spectrum-Form-item" use:styleable={$component.styles}>
-  <input on:input={handleInput} />
+  {#if !formContext}
+    <div class="placeholder">Mask input needs to be wrapped in a form</div>
+  {:else}
+    <label
+      class:hidden={!label}
+      for={fieldState?.fieldId}
+      class={`spectrum-FieldLabel spectrum-FieldLabel--sizeM spectrum-Form-itemLabel ${labelClass}`}
+    >
+      {label || " "}
+    </label>
+    <div class="spectrum-Textfield">
+      <input
+        class="spectrum-Textfield-input"
+        bind:value={inputValue}
+        on:input={handleInput}
+        on:change={handleChange}
+        placeholder={placeholder}
+        />
+    </div>
+    {#if fieldState?.error}
+      <div class="error">{fieldState.error}</div>
+    {/if}
+  {/if}
 </div>
 
 <style>
@@ -57,6 +98,13 @@
   }
   .spectrum-Form-itemField {
     position: relative;
+    width: 100%;
+  }
+  .spectrum-Form-item {
+    display: flex;
+    flex-direction: column;
+  }
+  .spectrum-Textfield {
     width: 100%;
   }
   .spectrum-FieldLabel--right,

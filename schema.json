@@ -2,10 +2,10 @@
   "type": "component",
   "metadata": {},
   "schema": {
-    "name": "nikita-input-mask",
-    "friendlyName": "nikita-input-mask",
-    "description": "Mask inputs for credit cards, phone numbers, etc",
-    "icon": "TextExclude",
+    "name": "Search-Bar",
+    "friendlyName": "Search-Bar",
+    "description": "custom input to handle input",
+    "icon": "Search",
     "settings": [
       {
         "type": "field/string",
@@ -20,15 +20,29 @@
       },
       {
         "type": "text",
-        "key": "mask",
-        "label": "Mask",
-        "defaultValue": "0000-000000-00000",
-        "required": true
+        "label": "Placeholder",
+        "key": "placeholder"
       },
       {
-        "type": "validation/string",
-        "label": "Validation",
-        "key": "validation"
+        "type": "text",
+        "label": "Default value",
+        "key": "defaultValue"
+      },
+      {
+        "type": "text",
+        "label": "Delay",
+        "key": "delay"
+      },
+      {
+        "type": "event",
+        "label": "On change",
+        "key": "onChange",
+        "context": [
+          {
+            "label": "Field Value",
+            "key": "value"
+          }
+        ]
       },
       {
         "type": "event",
@@ -40,6 +54,11 @@
             "key": "value"
           }
         ]
+      },
+      {
+        "type": "validation/string",
+        "label": "Validation",
+        "key": "validation"
       }
     ]
   }

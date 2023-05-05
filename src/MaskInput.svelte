@@ -30,10 +30,6 @@
   let shouldShowMask = alwaysShowMask || showMask;
   $: shouldShowMask = alwaysShowMask || showMask;
   $: input.setReformat(reformat);
-  $: input.setMaskFormat(maskFormat);
-  $: input.setMask(mask);
-  $: input.setMaskString(maskString);
-  $: input.setMaskChar(maskChar);
   $: value !== undefined && input.setValue(value);
 
   onMount(() => {
