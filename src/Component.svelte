@@ -9,6 +9,7 @@
   export let onChange
   export let onInput
   export let validation
+  export let isNumber
   let inputValue = defaultValue
   const component = getContext("component")
   const formContext = getContext("form")
@@ -81,6 +82,7 @@
       <input
         class="spectrum-Textfield-input"
         value={fieldState?.value}
+        type={isNumber? "number": "text"}
         on:input={handleInput}
         on:change={handleChange}
         placeholder={placeholder}
